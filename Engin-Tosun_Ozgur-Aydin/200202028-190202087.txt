@@ -1,0 +1,300 @@
+#define FlamePin A0 //yangın sensörü pini girişi
+#define buzzer 1 //buzzer pini
+
+void setup() {   // kurulum
+   
+   pinMode(FlamePin, INPUT); 
+   pinMode(buzzer, OUTPUT);
+    
+   delay(10);  
+}
+
+void loop() { // calisma mekanizmasi
+
+int Flame = digitalRead(FlamePin);
+
+if(Flame==HIGH) //Yangın high verirse
+{
+  digitalWrite(buzzer, HIGH); //buzzerın çalışması uyarılır.
+  delay(10);
+  
+}
+else
+{
+ digitalWrite(buzzer, LOW); //diger durumda çalışmaz
+}
+  
+} 
+
+
+
+
+// Hareket Algılayan Işık Sistemi Kodu
+int kalibrasyonZamani = 10; //Sensorun hazirlanmasi icin verdigim zaman 
+long unsigned int hghlow; //tüm hareketin durduğunu varsaymadan önce sensörün milisaniye miktarının düşük olması gerekir
+long unsigned int pause = 5000; 
+boolean lockLow = true; 
+boolean gecikme; 
+int pirPin = 3; //digital pine bağlantı pir sensoru icin
+int lampPin = 13; //led 13 e baaglı
+
+void setup()
+{
+  Serial.begin(9600); 
+  pinMode(pirPin, INPUT); 
+  pinMode(lampPin, OUTPUT); 
+  digitalWrite(pirPin, LOW); //sensore kalibre icin zaman
+  Serial.print("Sensor Hazirlaniyor "); 
+  for(int i = 0; i <kalibrasyonZamani ; i++)
+  { 
+    Serial.print("."); 
+    delay(1000); 
+  } 
+  
+  Serial.println(" done"); 
+  Serial.println("SENSOR AKTIF"); 
+  delay(50); 
+} 
+  
+void loop()
+{   
+  if(digitalRead(pirPin) == HIGH)    
+  {      
+    digitalWrite(lampPin, HIGH); //led, sensörlerin çıkış pin durumunu görselleştirir
+    
+    if(lockLow)      
+    { //daha fazla çıktı yapılmadan önce DÜŞÜK'e geçişi beklediğimizden emin olur:        
+      lockLow = false; 
+      Serial.println("---");        
+      Serial.print("hareket algilandi= "); 
+      Serial.print(millis()/1000); 
+      Serial.println(" sn"); 
+      delay(50);      
+    } 
+    gecikme = true; 
+  } 
+    
+  if(digitalRead(pirPin) == LOW)    
+  {       
+    digitalWrite(lampPin, LOW); //led, sensörlerin çıkış pin durumunu görselleştirir
+    
+    if(gecikme)      
+    {         
+      hghlow = millis(); //yüksekten DÜŞÜK'e geçiş zamanından tasarruf edin     
+      gecikme = false; //bunun yalnızca DÜŞÜK aşamanın başlangıcında yapıldığından emin olun     
+    } //sensör verilen duraklamadan daha uzun süre düşükse, daha fazla hareket olmayacağını varsayıyoruz   
+    
+    if(!lockLow && millis() - hghlow > pause)          
+    { //bu kod bloğunun yalnızca yeni bir hareket dizisi algılandıktan sonra yeniden yürütülmesini sağlar
+      lockLow = true; 
+      Serial.print("hareket durdu= "); //çıktı        
+      Serial.print((millis() - pause)/1000);          
+      Serial.println(" sn"); delay(50);       
+    } 
+  } 
+}
+  
+
+
+
+
+
+
+
+
+
+//Termometre kod
+# include "LiquidCrystal.h"         
+const int rs = 2, en = 3, d4 = 4, d5 = 5, d6 = 6, d7 = 7; // lcd bağlantılarımız
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+float gecici;          // lm35 icin tmp deger
+
+void setup() {          //system kurumu
+  Serial.begin(9600);
+  analogReference(2);
+  lcd.begin (16,2);                    // burada yazdıgım kodlar programıin bir kere calismasi icindir
+  lcd.setCursor(0, 0);
+  lcd.print(" Thermometer ");      
+  lcd.setCursor(0, 1);  // lcd yazdırma işleminde alt satıra geçmek için
+  delay(400);
+  lcd.print(" V2.0  ");
+  delay (700);
+  lcd.clear();                                           
+}
+void loop() {
+  gecici = analogRead(A0);                                                    //temp = temp * 0.48828125;  //temp=temp*(5.0/1023.0)*100; sicaklik hesabi formulu
+  gecici=gecici*1100/(1024*10);
+  lcd.print("TEMP: ");
+  lcd.print(gecici);
+  lcd.print("*C");
+  lcd.setCursor(0, 1);
+  if(gecici<20){ // 20 dereceden düşükse
+    lcd.println("Sicaklik dustu");
+  }
+  if(30<gecici) // 30 dereceden yüksekse
+  {
+    lcd.println("Sicaklik yukseldi"); 
+  }
+  
+  
+  delay(500);
+  lcd.clear();                                           //system kurulumu
+}
+
+
+
+
+
+
+
+
+
+
+//Kilit Sistemi Kodu
+
+
+#include<Keypad.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x3F,20,4);
+
+char tuslar[4][3]={ // keypadi char dizisi ile tanımlama
+ {'1','2','3'},
+ {'4','5','6'},
+ {'7','8','9'},
+ {'*','0','#'}};
+ 
+byte rowPin[4]={6,7,8,9}; // keypade bağlama pinleri
+byte colPin[3]={3,4,5};
+
+String sifre = "258";  // sifremiz.
+int position = 0;
+
+int wrong = 0; // Yanlış girdileri hesaplamak için değişken.
+
+
+int redPin = 10;
+int greenPin = 11;
+
+ 
+Keypad keypad=Keypad(makeKeymap(tuslar),rowPin,colPin,4,3);
+// KLAVYE HARİTASI.
+
+
+
+int total = 0; // Yanlış denemelerin sayısını belirlemek için değişken.
+
+void setup() // kurulumlar
+{
+  
+ pinMode(redPin,OUTPUT);
+ pinMode(greenPin,OUTPUT);
+
+ 
+lcd.init(); //lcd calistirma
+lcd.init();
+lcd.backlight();
+lcd.setCursor(0,1); // lcdye yazdırma konumu ayarı
+lcd.print("   Kilit Sistemi   ");
+lcd.setCursor(0,2);
+lcd.print("                 ");
+lcd.setCursor(0,3);
+lcd.print("      ");
+delay(3000);
+lcd.clear();
+LedRenk(true);
+delay(20);
+}
+
+void loop()
+{
+  
+  lcd.clear();
+  lcd.print(" Sifreyi Giriniz: ");
+  delay(100);
+  
+ char pressed=keypad.getKey();
+ String key[3];
+  
+ if(pressed)
+ {
+  lcd.clear();
+  lcd.print(" Sifreyi Giriniz: ");
+  lcd.setCursor(position,2);
+  lcd.print(pressed);
+  delay(500);
+    if(pressed == '*' || pressed == '#')
+      {
+          position = 0;
+          LedRenk(true);
+          lcd.clear();
+      }
+
+    else if(pressed == sifre[position])
+      {
+          key[position]=pressed;
+          position++;
+      }
+ 
+    else if (pressed != sifre[position] )
+      {
+          wrong++;
+          position ++;
+      }
+
+    if(position == 3){
+          if( wrong >0)
+            {
+                total++;
+                wrong = 0;
+                position = 0;
+                lcd.clear();
+                lcd.setCursor(0,2);
+                lcd.print("    Hatali Sifre!     ");
+                delay(1000);
+                LedRenk(true);
+            }
+
+          else if(position == 3 && wrong == 0)
+            {
+                position = 0;
+                wrong = 0;
+                lcd.clear();
+                lcd.setCursor(0,1);
+                lcd.print("      Hos geldiniz!     ");
+                lcd.setCursor(5,2);
+                lcd.print(" Kilit acildi.");
+                delay(2000);
+                LedRenk(false);
+            }
+
+             if(total ==3)
+            {
+                total=0;
+               
+                delay(500);
+            }
+
+        }
+
+   }   
+}
+
+void LedRenk(int locked) // Hatalı ve doğru şifrede led değişimleri
+  {
+    if (locked)
+      {
+          digitalWrite(redPin, HIGH);
+          digitalWrite(greenPin, LOW);
+          delay(1000);
+      }
+    else
+      {
+          digitalWrite(redPin, LOW);
+          digitalWrite(greenPin, HIGH);
+          delay(2000);
+          digitalWrite(redPin, HIGH);
+          digitalWrite(greenPin, LOW);
+      }
+  }

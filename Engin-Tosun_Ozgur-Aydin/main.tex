@@ -1,0 +1,389 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{ragged2e}
+\usepackage{indentfirst}
+\usepackage{multicol}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Akıllı Ev Sistemi Projesi\\
+}
+
+\author{\IEEEauthorblockN{\large Engin Tosun}
+\IEEEauthorblockA{\textit{} \\
+\textit{\large200202028}\\
+}
+\and
+\IEEEauthorblockN{\large Özgür Aydın}
+\IEEEauthorblockA{\textit{} \\
+\textit{\large190202087}\\
+}
+}
+
+\maketitle
+
+\section{Özet}
+Bu rapor Programlama Laboratuvarı II Dersinin 2. Projesini açıklamak ve sunumunu gerçekleştirmek amacıyla oluşturulmuştur. Bu proje C dilinde Code:Blocks ortamında geliştirilmiştir.Raporda projenin tanımı, özet, yöntem,karşılaşılan sorunlar ve çözümler,sözde kod, sonuç bölümünden oluşmaktadır. Proje aşamasında yararlanılan kaynaklar raporun son bölümünde bulunmaktadır. 
+
+
+\section{Proje Tanımı}
+ Bu projenin amacı, Arduino üzerinde çalışan bir akıllı ev simülasyonu yapmaktır.\\
+
+Nesnelerin İnterneti (IoT) uygulamalarının yaygınlaşması ile insanların nesneler ile olan 
+iletişiminin yanı sıra nesnelerin nesneler ile olan iletişimi gün geçtikçe önem arz etmekte ve bu alandaki çalışmalar artmaktadır. Bu çalışmalardan birisi Akıllı Ev Sistemleri’dir.\\
+Ev ortamında gerçekleştirilen faaliyetleri kolaylaştıran, güvenilir bir ortam sağlayan ve insan 
+hayatına konfor, rahatlık veren ev otomasyonu sistemlerine Akıllı Ev denilmektedir.\\
+Akıllı ev, ev teknolojileri endüstrinin birçok alanında kullanılan kontrol sistemlerinin gündelik 
+hayata uyarlanması; ev otomasyonu ise bu teknolojilerin kişiye özel ihtiyaç ve isteklerine 
+uygulanmasıdır. Akıllı ev tanımı, bütün bu teknolojiler sayesinde ev sakinlerinin ihtiyaçlarına 
+cevap verebilen, onların hayatlarını kolaylaştıran ve daha güvenli daha konforlu ve daha 
+tasarruflu bir yaşam sunan evler için kullanılmaktadır. Akıllı evler, otomatik fonksiyonları ve 
+sistemleri kullanıcı tarafından uzaktan kontrol edilebilen cihazları içerirler.\\
+
+Akıllı ev sistemlerinde bulunabilecek bazı özellikler şu şekildedir:
+• Otomatik ısı sabitleme,\\
+• Odalarda ışık kontrolü,\\
+• Perdelerin açılıp kapanma kontrolü,\\
+• Garaj kapısı kontrolü,\\
+• Hırsız alarm sistemi,\\
+• Ev ile ilgili bilgilerin telefondan otomatik alınması,\\
+• Otomatik toprak sulama sistemi, vb.\\
+
+\\
+Projede Yapılması İstenen İsterler Hakkında:\\
+Projede Proteus programında Arduino kartı kullanarak akıllı ev sistemi oluşturmamız 
+beklenmektedir. Sistem içerisinde;
+• Yangın alarmı, \\
+• Hareket algılayan ışık sistemi,\\ 
+• Dijital termometre,\\
+• Kilit sistemi bulunmalıdır. \\ 
+Aşağıda verilen sensör ve elemanları kullanarak belirtilen isterleri gerçekleştiriniz.\\
+1. Arduino kartı olarak Arduino Mega kullanılmalıdır.\\
+
+Projede yangın sensörü ve buzzer kullanılmalıdır. Yangın tespit edildiğinde alarm çalması sağlanmalıdır.\\
+Projede hareket sensörü ve lamba kullanılmalıdır. Hareket tespit edildiğinde lamba yanması 
+sağlanmalıdır.\\
+rojede sıcaklık sensörü ve LCD ekran kullanılmalıdır. Algılanan sıcaklığın devamlı olarak 
+LCD ekranda gösterilmesi sağlanmalıdır. Sıcaklık 20 C’nin altına düştüğünde ekrana 
+“Sıcaklık düştü”, 30 C’nin üstüne çıktığında “Sıcaklık yükseldi” yazdırılmalıdır.\\
+Projede tuş takımı (keypad), kırmızı ve yeşil led kullanılmalıdır. Keypad ile girilecek 4 
+haneli bir şifre belirlenmelidir. Şifre yanlış girildiğinde kırmızı, doğru girildiğinde yeşil 
+ledin yanması sağlanmalıdır.\\
+KISITLAR: \\
+• Proje Arduino IDE ve Proteus programları kullanılarak geliştirilecektir. \\
+• Belirtilen bütün sensörlerin kullanılması zorunludur.\\
+• Projeye başka sensörler eklenmemelidir.\\
+
+
+
+\section{Yöntem}
+Projede istenen isterler için arduino ve proteus hakkında araştırma yapıldı ve programlama için arduinonun syntaxına bakıldı ve koda uygulandı.Proteus kullanılarak tek tek her sistemin devresi internetten yardım alınarak kuruldu.
+Arduino ve sensörlerin libraryleri internetten indirilerek proteus ortamına kuruldu. Sonrasında arduino kodu oluşturulmaya başlandı. Çıkan çeşitli hatalar internette araştırılarak kütüphaneleri arduino idesine kuruldu. Bütün sistemlerin çalışması kontrol edildi.\\
+\begin{flushleft}
+\textbf{Projede Yapılması istenen isterler hakkında\\}	
+\end{flushleft}
+
+A) Yangın alarmı buzzerın ötmesi ile gerçekleşen sistem.\\
+B) Sıcaklık ölçer lcd ekrana sıcaklık değerini yazdırma ve 20 derece altı sıcaklık düştü ve 30 derece üstü sıcaklık yüksek ikazı verdirme \\
+C) Kilit sistemi girilen şifreye göre kırmızı yanlış şifre yeşil doğru şifre olduğunu belirtmesi için yanması.\\
+D)Hareket sensörü hareket algılayınca lambanının yanması.\\
+\\
+
+
+
+
+
+
+\section{Sözde Kod}
+\begin{verbatim}
+Yangın alarmı sözde kodu:\\
+define FlamePin A0 yangın sensörü 
+pini girişi\\
+define buzzer 1 buzzer pini girişi\\
+setup()   // kurulum
+   pinMode(FlamePin, INPUT); 
+   pinMode(buzzer, OUTPUT);
+   gecikme(10);  
+dongü() { // calisma mekanizmasi
+
+int Flame = digitalRead(FlamePin);
+if(Flame==HIGH) Yangın high verirse
+  digitalWrite(buzzer, HIGH); buzzerın 
+  çalışması uyarılır.
+ delay(10);
+else
+ digitalWrite(buzzer, LOW); low verirse 
+ buzzer çalışmaz.
+
+
+Hareket algılayan ışık sistemi sözde kodu:\\
+
+int kalibrasyonZamani = 10;
+Sensorun hazirlanmasi 
+icin verdigim zaman 
+long unsigned int lowIn; 
+tüm hareketin durduğunu 
+varsaymadan önce sensörün milisaniye 
+miktarının düşük olması gerekir
+long unsigned int pause = 5000; 
+boolean lockLow = true; 
+boolean gecikme; 
+int pirPin = 3; digital pine bağlantı 
+pir sensoru icin
+int lampPin = 13; //led 13 e baaglı
+
+kurulum() kurulumu
+  pinMode(pirPin, INPUT); 
+  pinMode(lampPin, OUTPUT); 
+  digitalWrite(pirPin, LOW); sensore kalibre icin zaman
+  seriyazdır("Sensor Hazirlaniyor "); 
+  for(int i = 0; i <kalibrasyonZamani ; i++)
+    yazdır("."); 
+ gecikme(1000); 
+  yazdır(" done"); 
+  yazdır("SENSOR AKTIF"); 
+  gecikme(50); 
+
+döngü()
+   
+  if(digitalRead(pirPin) == HIGH)    
+        
+    digitalWrite(lampPin, HIGH) led, sensörlerin 
+    çıkış pin durumunu görselleştirir
+    
+    if(lockLow)      
+     daha fazla çıktı yapılmadan önce DÜŞÜK'e geçişi \\
+    beklediğimizden emin olur        
+      lockLow = false; 
+      yazdır("---");        
+      yazdır("hareket algilandi= "); 
+      yazdır(millis()/1000); 
+      yazdır(" sn"); 
+      delay(50);      
+    
+    gecikme = true; 
+  
+    
+  if(digitalRead(pirPin) == LOW)    
+        
+    digitalWrite(lampPin, LOW); //led, sensörlerin çıkış 
+    pin durumunu görselleştirir
+    
+    if(gecikme)      
+            
+ lowIn = millis() yüksekten DÜŞÜK'e geçiş 
+ zamanından tasarruf edin     
+ gecikme = false bunun yalnızca DÜŞÜK aşamanın 
+başlangıcında yapıldığından emin olun     
+sensör verilen duraklamadan daha uzun süre düşükse, \\
+daha fazla hareket olmayacağını varsayıyoruz   
+    
+if(!lockLow && millis() - lowIn > pause)          
+bu kod bloğunun yalnızca 
+yeni bir hareket dizisi \\
+algılandıktan sonra yeniden
+yürütülmesini sağlar\\
+      lockLow = true; \\
+      yazdır("motion ended at "); //çıktı        
+      yazdır((millis() - pause)/1000);          
+      yazdır(" sec"); delay(50);       
+  
+
+Dijital termometre sözde kodu:
+
+     
+const int rs = 2, en = 3, d4 = 4, 
+d5 = 5, d6 = 6, d7 = 7; lcd bağlantıları
+
+float gecici;  lm35 icin tmp deger
+
+kurulum() 
+  analogReference(2);
+  lcd.begin (16,2);  burada yazdıgım 
+  kodlar programıin 
+  bir kere calismasi icindir
+  en üst satır(0, 0);
+  lcd.yazdır(" Thermometer ");      
+  lcd bir alt satıra geç(0, 1);
+  delay(400);
+  lcd.yzdır(" V2.0  ");
+  delay (700);
+  lcd.temizle(); system kurumu
+
+void loop() 
+  gecici = analogRead(A0);                                                    
+  temp = temp * 0.48828125;
+  temp=temp*(5.0/1023.0)*100; 
+  sicaklik hesabi formulu
+  gecici=gecici*1100/(1024*10);
+  lcd yazdır("TEMP: ");
+  lcd yazdır(gecici);
+  lcd yazdır("*C");
+  lcd. bir alt satıra geç(0, 1);
+  if(gecici<20) 20 dereceden düşükse
+    lcd yazdır("Sicaklik dustu");
+  
+  if(30<gecici) 30 dereceden yüksekse
+  
+    lcd yazdır("Sicaklik yukseldi"); 
+  
+  gecikme(500);
+  lcd.temizle(); system kurulumu
+  
+ Kilit sistemi sözde kodu: \\
+ 
+char keys[4][3]={  keypadi char 
+dizisi ile tanımlama
+
+byte rowPin[4]={6,7,8,9};
+byte colPin[3]={3,4,5};
+
+String password = "258"; password.
+int position = 0;
+
+int wrong = 0 Yanlış girdileri 
+hesaplamak için değişken.
+
+
+redPin = 10; pin girişleri
+greenPin = 11;
+
+Keypad keypad=Keypad(makeKeymap(keys),rowPin,colPin,4,3);
+ KLAVYE HARİTASI.
+
+int total = 0;Yanlış denemelerin sayısını 
+belirlemek için değişken.
+kurulum()
+{
+ pinMode(redPin,OUTPUT);
+ pinMode(greenPin,OUTPUT);
+ pinMode(buzzer, OUTPUT);
+ 
+lcd kurulumu
+}
+void loop()
+{
+  lcd.clear();
+  lcd.print(" Sifreyi Giriniz: ");
+  delay(100);
+  
+ char pressed=keypad.getKey();
+ String key[3];
+  
+ if(pressed)
+ {
+  lcd.clear();
+  lcd.print(" Sifreyi Giriniz: ");
+  lcd.setCursor(position,2);
+  lcd.print(pressed);
+  delay(500);
+    if(pressed == '*' || pressed == '#') sifre giriş algoritması
+          position = 0;
+          setLocked(true);
+          lcd.clear();
+      
+    else if(pressed == password[position])
+          key[position]=pressed;
+          position++;
+     
+    else if (pressed != password[position] )
+          wrong++;
+          position ++;
+    
+    if(position == 3){
+          if( wrong >0)
+         
+               hatalı sifre wrong++
+          
+    else if(position == 3 && wrong == 0)
+            {
+        position = 0;
+        wrong = 0;
+        lcd.clear();
+        lcd.setCursor(0,1);
+        lcd.yazdır("Hos geldiniz!");
+        lcd.setCursor(5,2);
+        lcd.yazdır(" Kilit acildi.");
+      gecikme(2000);
+        
+void setLocked(int locked)
+  {
+    if (locked)
+      {
+        kırmızı led yak
+        yeşil led söndür
+      }
+    else
+      {
+       kırmızı led söndür
+       yeşil led yak
+          gecikme(2000);
+           kırmızı led yak
+        yeşil led söndür
+         
+\end{verbatim}
+\\ \\
+\\
+\\
+\\
+\section{Sonuç}
+
+
+Yangın Alarmı Pasif Konum\\ \\
+    \includegraphics[width=9 cm,height=8 cm]{Yangın Sensörü İlk Konum.png}\\\\ \\
+    \\ \\ \\
+   
+    Yangın Alarmı Aktif Konum\\ \\
+   \includegraphics[width=9 cm,height=8 cm]{Yangın2.png}\\\\ \\ 
+    
+   
+   Hareket Algılayan Işık Sistemi Devresi\\ \\
+     \includegraphics[width=9 cm,height=8 cm]{Hareketseen.PNG}\\ \\ \\ \\ \\
+     \\ \\
+     
+     Hareket Algılayan Işık Sistemi Devresi(Çalışır Durumda)\\ \\
+     \includegraphics[width=9 cm,height=8 cm]{b1.png}\\ 
+    \\
+    \\
+    \\
+    \\ \\ \\
+     
+     
+     
+     Dijital Termometre Sistemi (Çalışır Halde)\\ 
+     
+      \includegraphics[width=9 cm,height=8 cm]{Termometre1.PNG}\\ \\ \\
+      \\ \\
+      \\
+     
+      
+     Kilit Sistemi Devresi\\ \\
+      \includegraphics[width=10 cm,height=9 cm]{c12.PNG}\\ \\
+     \\ \\ \\
+     
+     
+     
+        \section{Kaynakça}
+Proteus devre elemanları için;\\
+- https://www.theengineeringprojects.com/2016/01/pir-sensor-library-proteus.html\\
+- en.wikipedia.org/wiki/\\
+- https://www.theengineeringprojects.com/2016/01/pir-sensor-library-proteus.html\\
+Genel Sorunlar için;\\
+-stackoverflow.com\\
+-theprogrammershangout.com\\
+ LaTeX Raporu hazırlamak için gerekli ekipman ve bilgiler;\\
+- www.overleaf.com\\\\
+
+
+
+
+
+\end{document}
